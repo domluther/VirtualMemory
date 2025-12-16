@@ -221,7 +221,7 @@ const VirtualMemorySimulator = () => {
       setTimeout(() => {
         setRam([...ram, { ...item, status: 'open' }]);
         setScore(score + 10);
-        setMessage(`✓ ${item.name} loaded into RAM successfully! (Original remains in storage)`);
+        setMessage(`✓ ${item.name} loaded into RAM successfully!`);
         setIsLoading(false);
         setLoadingMessage('');
         
