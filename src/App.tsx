@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Monitor, HardDrive, Cpu } from 'lucide-react';
+
+interface Program {
+  id: string;
+  name: string;
+  size: number;
+  color: string;
+  removable: boolean;
+  status?: string;
+}
+
+interface DraggedItem {
+  item: Program;
+  source: string;
+}
 
 const VirtualMemorySimulator = () => {
   const [gameState, setGameState] = useState('start'); // start, running, complete
-  const [gameMode, setGameMode] = useState(null); // 'freestyle' or 'challenges'
+  const [gameMode, setGameMode] = useState<'freestyle' | 'challenges' | null>(null);
   const [currentLevel, setCurrentLevel] = useState(1);
-  const [ram, setRam] = useState([]);
-  const [virtualMemory, setVirtualMemory] = useState([]);
-  const [secondaryStorage, setSecondaryStorage] = useState([]);
+  const [ram, setRam] = useState<Program[]>([]);
+  const [virtualMemory, setVirtualMemory] = useState<Program[]>([]);
+  const [secondaryStorage, setSecondaryStorage] = useState<Program[]>([]);
   const [currentInstruction, setCurrentInstruction] = useState('');
-  const [programQueue, setProgramQueue] = useState([]);
+  const [programQueue, setProgramQueue] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [message, setMessage] = useState('');
-  const [draggedItem, setDraggedItem] = useState(null);
+  const [message, setMessage] = useState<string | React.ReactElement>('');
+  const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [ramCapacity, setRamCapacity] = useState(4);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
-
-  const RAM_CAPACITY = ramCapacity;
   
   // Define challenge levels
   const CHALLENGE_LEVELS = [
@@ -82,17 +94,18 @@ const VirtualMemorySimulator = () => {
     { id: 'email', name: 'Email Client', size: 1, color: 'bg-indigo-500', removable: true, status: 'open' }
   ];
 
-  const startSimulation = () => {
+  const startSimulation = (levelNum?: number) => {
+    const effectiveLevel = levelNum || currentLevel;
     let levelData;
     if (gameMode === 'challenges') {
-      levelData = CHALLENGE_LEVELS[currentLevel - 1];
+      levelData = CHALLENGE_LEVELS[effectiveLevel - 1];
       setRamCapacity(levelData.ram);
     }
     
     // Small delay to ensure ramCapacity state updates before we use it
     setTimeout(() => {
       if (gameMode === 'challenges') {
-        const level = CHALLENGE_LEVELS[currentLevel - 1];
+        const level = CHALLENGE_LEVELS[effectiveLevel - 1];
         
         // Get unique programs for storage, but keep the full sequence for the queue
         const uniqueProgramIds = [...new Set(level.programs)];
@@ -125,17 +138,17 @@ const VirtualMemorySimulator = () => {
     setProgramQueue([]);
   };
 
-  const handleDragStart = (e, item, source) => {
+  const handleDragStart = (e: React.DragEvent, item: Program, source: string) => {
     setDraggedItem({ item, source });
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDropToRAM = (e) => {
+  const handleDropToRAM = (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggedItem || isLoading) return;
 
@@ -194,7 +207,7 @@ const VirtualMemorySimulator = () => {
 
     // Check if it's the correct program to open
     if (programQueue.length > 0 && item.id !== programQueue[0]) {
-      setMessage(`❌ Wait! You need to open ${PROGRAMS.find(p => p.id === programQueue[0]).name} next.`);
+      setMessage(`❌ Wait! You need to open ${PROGRAMS.find(p => p.id === programQueue[0])?.name} next.`);
       setDraggedItem(null);
       return;
     }
@@ -219,7 +232,9 @@ const VirtualMemorySimulator = () => {
         
         if (newQueue.length > 0) {
           const nextProgram = PROGRAMS.find(p => p.id === newQueue[0]);
-          setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
+          if (nextProgram) {
+            setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
+          }
         } else {
           if (gameMode === 'challenges') {
             setCurrentInstruction('🎉 Level Complete! All programs loaded successfully!');
@@ -249,7 +264,9 @@ const VirtualMemorySimulator = () => {
           
           if (newQueue.length > 0) {
             const nextProgram = PROGRAMS.find(p => p.id === newQueue[0]);
-            setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
+            if (nextProgram) {
+              setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
+            }
           } else {
             setCurrentInstruction('🎉 Level Complete! All programs loaded successfully!');
             setGameState('complete');
@@ -261,7 +278,7 @@ const VirtualMemorySimulator = () => {
     setDraggedItem(null);
   };
 
-  const handleDropToVirtual = (e) => {
+  const handleDropToVirtual = (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggedItem || isLoading) return;
 
@@ -293,7 +310,7 @@ const VirtualMemorySimulator = () => {
     setDraggedItem(null);
   };
 
-  const handleDropToSecondary = (e) => {
+  const handleDropToSecondary = (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggedItem || isLoading) return;
 
@@ -336,7 +353,7 @@ const VirtualMemorySimulator = () => {
     setDraggedItem(null);
   };
 
-  const toggleProgramStatus = (programId) => {
+  const toggleProgramStatus = (programId: string) => {
     setRam(ram.map(p => 
       p.id === programId ? { ...p, status: p.status === 'open' ? 'inactive' : 'open' } : p
     ));
@@ -473,7 +490,7 @@ const VirtualMemorySimulator = () => {
                   key={level.level}
                   onClick={() => {
                     setCurrentLevel(level.level);
-                    startSimulation();
+                    startSimulation(level.level);
                   }}
                   className="p-4 text-left transition transform rounded-lg bg-slate-700 hover:bg-slate-600 hover:scale-105"
                 >
