@@ -471,7 +471,7 @@ const VirtualMemorySimulator = () => {
                 ← Back
               </button>
               <button
-                onClick={startSimulation}
+                onClick={() => startSimulation()}
                 className="px-8 py-3 font-semibold transition bg-green-600 rounded-lg hover:bg-green-700"
               >
                 Start Computer
@@ -666,8 +666,9 @@ const VirtualMemorySimulator = () => {
               {gameState === 'complete' && gameMode === 'challenges' && currentLevel < CHALLENGE_LEVELS.length && (
                 <button
                   onClick={() => {
-                    setCurrentLevel(currentLevel + 1);
-                    startSimulation();
+                    const nextLevel = currentLevel + 1;
+                    setCurrentLevel(nextLevel);
+                    startSimulation(nextLevel);
                   }}
                   className="px-6 py-2 transition bg-green-600 rounded-lg hover:bg-green-700"
                 >
