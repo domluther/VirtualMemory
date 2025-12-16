@@ -162,14 +162,14 @@ const VirtualMemorySimulator = () => {
       if (activeSize + item.size > currentRAMCapacity) {
         setMessage(
           <div>
-            <p className="font-bold mb-2">❌ Impossible! This program won't fit even if you free up space.</p>
-            <p className="text-sm mb-2">
+            <p className="mb-2 font-bold">❌ Impossible! This program won't fit even if you free up space.</p>
+            <p className="mb-2 text-sm">
               You need {item.size}GB for {item.name}, but with the OS and other active programs, 
               there's only space for programs up to {currentRAMCapacity - activeSize}GB.
             </p>
             <button
               onClick={resetSimulation}
-              className="mt-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-semibold"
+              className="px-4 py-2 mt-2 text-sm font-semibold bg-red-600 rounded hover:bg-red-700"
             >
               Reset Simulation
             </button>
@@ -180,8 +180,8 @@ const VirtualMemorySimulator = () => {
       } else {
         setMessage(
           <div>
-            <p className="font-bold mb-2">❌ RAM is full and you have no inactive programs to move!</p>
-            <p className="text-sm mb-2">
+            <p className="mb-2 font-bold">❌ RAM is full and you have no inactive programs to move!</p>
+            <p className="mb-2 text-sm">
               Try making some programs inactive (click them) first, then move them to Virtual Memory. 
               Or close some programs by dragging them to Secondary Storage.
             </p>
@@ -219,7 +219,7 @@ const VirtualMemorySimulator = () => {
         
         if (newQueue.length > 0) {
           const nextProgram = PROGRAMS.find(p => p.id === newQueue[0]);
-          setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB). Drag it from Secondary Storage to RAM.`);
+          setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
         } else {
           if (gameMode === 'challenges') {
             setCurrentInstruction('🎉 Level Complete! All programs loaded successfully!');
@@ -249,7 +249,7 @@ const VirtualMemorySimulator = () => {
           
           if (newQueue.length > 0) {
             const nextProgram = PROGRAMS.find(p => p.id === newQueue[0]);
-            setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB). Drag it from Secondary Storage to RAM or Virtual Memory.`);
+            setCurrentInstruction(`Open ${nextProgram.name} (${nextProgram.size}GB).`);
           } else {
             setCurrentInstruction('🎉 Level Complete! All programs loaded successfully!');
             setGameState('complete');
@@ -351,61 +351,62 @@ const VirtualMemorySimulator = () => {
   const ramPercentage = (ramUsage / currentRAMCapacity) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-8">
+    <div className="min-h-screen p-8 text-white bg-linear-to-br from-slate-900 to-slate-800">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center justify-center gap-3">
+        <div className="mb-8 text-center">
+          <h1 className="flex items-center justify-center gap-3 mb-2 text-4xl font-bold">
             <Monitor className="w-10 h-10" />
             Virtual Memory Simulator
           </h1>
-          <p className="text-slate-300">GCSE J277 Computer Science - Memory Management</p>
+          <p className="text-slate-300">OCR J277 Computer Science - Memory Management</p>
         </div>
 
         {gameState === 'start' && (
-          <div className="bg-slate-800 rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">Choose Your Mode</h2>
+          <div className="p-8 rounded-lg bg-slate-800">
+            <h2 className="mb-6 text-2xl font-bold text-center">Choose Your Mode</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <button
-                onClick={() => {
-                  setGameMode('freestyle');
-                  setGameState('freestyle-setup');
-                }}
-                className="bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 p-6 rounded-lg transition transform hover:scale-105"
-              >
-                <h3 className="text-2xl font-bold mb-2">🎨 Freestyle Mode</h3>
-                <p className="text-blue-100">
-                  Choose your RAM size and experiment freely with loading programs, 
-                  managing memory, and using virtual memory.
-                </p>
-              </button>
-              
+            <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">              
               <button
                 onClick={() => {
                   setGameMode('challenges');
                   setGameState('challenges');
                 }}
-                className="bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 p-6 rounded-lg transition transform hover:scale-105"
+                className="p-6 transition transform rounded-lg bg-linear-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 hover:scale-105"
               >
-                <h3 className="text-2xl font-bold mb-2">🏆 Challenges Mode</h3>
+                <h3 className="mb-2 text-2xl font-bold">🏆 Challenges Mode</h3>
                 <p className="text-purple-100">
                   Complete {CHALLENGE_LEVELS.length} levels with specific tasks and memory constraints. 
                   Progress from easy to challenging scenarios!
                 </p>
               </button>
+
+              <button
+                onClick={() => {
+                  setGameMode('freestyle');
+                  setGameState('freestyle-setup');
+                }}
+                className="p-6 transition transform rounded-lg bg-linear-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:scale-105"
+              >
+                <h3 className="mb-2 text-2xl font-bold">🎨 Freestyle Mode</h3>
+                <p className="text-blue-100">
+                  Choose your RAM size and experiment freely with loading programs, 
+                  managing memory, and using virtual memory.
+                </p>
+              </button>
+
             </div>
           </div>
         )}
 
         {gameState === 'freestyle-setup' && (
-          <div className="bg-slate-800 rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-4 text-center">Freestyle Mode Setup</h2>
-            <p className="text-slate-300 mb-6 text-center">
+          <div className="p-8 rounded-lg bg-slate-800">
+            <h2 className="mb-4 text-2xl font-bold text-center">Freestyle Mode Setup</h2>
+            <p className="mb-6 text-center text-slate-300">
               Choose your computer's RAM size and experiment with memory management!
             </p>
             
             <div className="mb-6">
-              <label className="block text-center mb-3 font-semibold text-lg">
+              <label className="block mb-3 text-lg font-semibold text-center">
                 Select Computer RAM Size:
               </label>
               <div className="flex justify-center gap-4">
@@ -440,7 +441,7 @@ const VirtualMemorySimulator = () => {
                   8GB RAM
                 </button>
               </div>
-              <p className="text-center text-sm text-slate-400 mt-3">
+              <p className="mt-3 text-sm text-center text-slate-400">
                 Note: Some programs require more RAM to run!
               </p>
             </div>
@@ -448,13 +449,13 @@ const VirtualMemorySimulator = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setGameState('start')}
-                className="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-lg font-semibold transition"
+                className="px-6 py-3 font-semibold transition rounded-lg bg-slate-700 hover:bg-slate-600"
               >
                 ← Back
               </button>
               <button
                 onClick={startSimulation}
-                className="bg-green-600 hover:bg-green-700 px-8 py-3 rounded-lg font-semibold transition"
+                className="px-8 py-3 font-semibold transition bg-green-600 rounded-lg hover:bg-green-700"
               >
                 Start Computer
               </button>
@@ -463,10 +464,10 @@ const VirtualMemorySimulator = () => {
         )}
 
         {gameState === 'challenges' && (
-          <div className="bg-slate-800 rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">Challenge Levels</h2>
+          <div className="p-8 rounded-lg bg-slate-800">
+            <h2 className="mb-6 text-2xl font-bold text-center">Challenge Levels</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-3">
               {CHALLENGE_LEVELS.map((level) => (
                 <button
                   key={level.level}
@@ -474,15 +475,15 @@ const VirtualMemorySimulator = () => {
                     setCurrentLevel(level.level);
                     startSimulation();
                   }}
-                  className="bg-slate-700 hover:bg-slate-600 p-4 rounded-lg text-left transition transform hover:scale-105"
+                  className="p-4 text-left transition transform rounded-lg bg-slate-700 hover:bg-slate-600 hover:scale-105"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-lg font-bold">Level {level.level}</h3>
-                    <span className="text-sm bg-blue-600 px-2 py-1 rounded">{level.ram}GB RAM</span>
+                    <span className="px-2 py-1 text-sm bg-blue-600 rounded">{level.ram}GB RAM</span>
                   </div>
-                  <p className="font-semibold text-blue-300 mb-1">{level.name}</p>
+                  <p className="mb-1 font-semibold text-blue-300">{level.name}</p>
                   <p className="text-sm text-slate-400">{level.description}</p>
-                  <p className="text-xs text-slate-500 mt-2">{level.programs.length} programs to load</p>
+                  <p className="mt-2 text-xs text-slate-500">{level.programs.length} programs to load</p>
                 </button>
               ))}
             </div>
@@ -490,7 +491,7 @@ const VirtualMemorySimulator = () => {
             <div className="text-center">
               <button
                 onClick={() => setGameState('start')}
-                className="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-lg font-semibold transition"
+                className="px-6 py-3 font-semibold transition rounded-lg bg-slate-700 hover:bg-slate-600"
               >
                 ← Back to Menu
               </button>
@@ -500,56 +501,56 @@ const VirtualMemorySimulator = () => {
 
         {(gameState === 'running' || gameState === 'complete') && (
           <>
-            <div className="bg-slate-800 rounded-lg p-4 mb-6">
+            <div className="p-4 mb-6 rounded-lg bg-slate-800">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <Cpu className="w-5 h-5 text-blue-400" />
-                  <span className="text-slate-400 text-sm uppercase tracking-wide">
+                  <span className="text-sm tracking-wide uppercase text-slate-400">
                     {gameMode === 'challenges' ? `Level ${currentLevel}: ${CHALLENGE_LEVELS[currentLevel - 1].name}` : 'Freestyle Mode'}
                   </span>
                   <span className="text-slate-500">|</span>
-                  <span className="text-slate-400 text-sm">{currentRAMCapacity}GB RAM</span>
+                  <span className="text-sm text-slate-400">{currentRAMCapacity}GB RAM</span>
                 </div>
-                <div className="text-yellow-400 font-bold">Score: {score}</div>
+                <div className="font-bold text-yellow-400">Score: {score}</div>
               </div>
-              <p className="text-xl font-bold text-white mb-1">{currentInstruction}</p>
+              <p className="mb-1 text-xl font-bold text-white">{currentInstruction}</p>
               {isLoading && (
-                <div className="mt-3 p-3 bg-blue-900 rounded border-l-4 border-blue-500 flex items-center gap-3">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <div className="flex items-center gap-3 p-3 mt-3 bg-blue-900 border-l-4 border-blue-500 rounded">
+                  <div className="w-5 h-5 border-b-2 border-white rounded-full animate-spin"></div>
                   <span className="text-blue-200">{loadingMessage}</span>
                 </div>
               )}
               {message && !isLoading && (
-                <div className="mt-3 p-3 bg-slate-700 rounded border-l-4 border-blue-500">
+                <div className="p-3 mt-3 border-l-4 border-blue-500 rounded bg-slate-700">
                   {message}
                 </div>
               )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
               {/* RAM */}
               <div 
-                className="bg-slate-800 rounded-lg p-6 border-2 border-green-500"
+                className="p-6 border-2 border-green-500 rounded-lg bg-slate-800"
                 onDragOver={handleDragOver}
                 onDrop={handleDropToRAM}
               >
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <h3 className="flex items-center gap-2 mb-4 text-xl font-bold">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   RAM (Primary Memory)
                 </h3>
                 <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="flex justify-between mb-1 text-sm">
                     <span>Usage: {ramUsage} / {currentRAMCapacity} GB</span>
                     <span>{ramPercentage.toFixed(0)}%</span>
                   </div>
-                  <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
+                  <div className="w-full h-4 overflow-hidden rounded-full bg-slate-700">
                     <div 
                       className={`h-full transition-all ${ramPercentage >= 100 ? 'bg-red-500' : ramPercentage >= 75 ? 'bg-yellow-500' : 'bg-green-500'}`}
                       style={{ width: `${Math.min(ramPercentage, 100)}%` }}
                     ></div>
                   </div>
                 </div>
-                <div className="space-y-2 min-h-[200px]">
+                <div className="space-y-2 min-h-50">
                   {ram.map(program => (
                     <div
                       key={program.id}
@@ -558,10 +559,10 @@ const VirtualMemorySimulator = () => {
                       onClick={() => program.removable && toggleProgramStatus(program.id)}
                       className={`${program.color} p-3 rounded cursor-move hover:opacity-80 transition`}
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex items-center justify-between">
                         <span className="font-semibold">{program.name}</span>
-                        <div className="flex gap-2 items-center">
-                          <span className="text-sm bg-black bg-opacity-30 px-2 py-1 rounded">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-1 text-sm bg-black rounded bg-opacity-30">
                             {program.status || 'running'}
                           </span>
                           <span className="text-sm">{program.size} GB</span>
@@ -570,7 +571,7 @@ const VirtualMemorySimulator = () => {
                     </div>
                   ))}
                   {ram.length === 0 && (
-                    <div className="text-slate-500 text-center py-8">
+                    <div className="py-8 text-center text-slate-500">
                       Drop programs here to load into RAM
                     </div>
                   )}
@@ -578,20 +579,20 @@ const VirtualMemorySimulator = () => {
               </div>
 
               {/* Secondary Storage */}
-              <div className="bg-slate-800 rounded-lg p-6 border-2 border-purple-500">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <div className="p-6 border-2 border-purple-500 rounded-lg bg-slate-800">
+                <h3 className="flex items-center gap-2 mb-4 text-xl font-bold">
                   <HardDrive className="w-5 h-5" />
                   Secondary Storage (Hard Disk)
                 </h3>
                 
                 {/* Virtual Memory Section */}
                 <div 
-                  className="bg-slate-900 rounded-lg p-4 mb-4 border-2 border-orange-500"
+                  className="p-4 mb-4 border-2 border-orange-500 rounded-lg bg-slate-900"
                   onDragOver={handleDragOver}
                   onDrop={handleDropToVirtual}
                 >
-                  <h4 className="font-semibold mb-2 text-orange-400">Virtual Memory (for inactive programs)</h4>
-                  <div className="space-y-2 min-h-[100px]">
+                  <h4 className="mb-2 font-semibold text-orange-400">Virtual Memory (for inactive programs)</h4>
+                  <div className="space-y-2 min-h-25">
                     {virtualMemory.map(program => (
                       <div
                         key={program.id}
@@ -606,7 +607,7 @@ const VirtualMemorySimulator = () => {
                       </div>
                     ))}
                     {virtualMemory.length === 0 && (
-                      <div className="text-slate-600 text-center py-4 text-sm">
+                      <div className="py-4 text-sm text-center text-slate-600">
                         Drop inactive background programs here when RAM is full
                       </div>
                     )}
@@ -615,11 +616,11 @@ const VirtualMemorySimulator = () => {
 
                 {/* Regular Storage */}
                 <div 
-                  className="space-y-2 min-h-[200px]"
+                  className="space-y-2 min-h-50"
                   onDragOver={handleDragOver}
                   onDrop={handleDropToSecondary}
                 >
-                  <h4 className="font-semibold mb-2 text-purple-400">Programs</h4>
+                  <h4 className="mb-2 font-semibold text-purple-400">Programs</h4>
                   {secondaryStorage.map(program => (
                     <div
                       key={program.id}
@@ -637,21 +638,10 @@ const VirtualMemorySimulator = () => {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-lg p-6">
-              <h3 className="font-bold mb-3">📚 Key Concepts:</h3>
-              <ul className="space-y-2 text-sm text-slate-300">
-                <li>• <strong>RAM:</strong> Fast, temporary memory where active programs run</li>
-                <li>• <strong>Virtual Memory:</strong> Uses hard disk space for inactive background programs when RAM is full</li>
-                <li>• <strong>Active vs Inactive:</strong> Click programs in RAM to toggle between active and inactive (background)</li>
-                <li>• <strong>Page Swapping:</strong> Moving inactive programs between RAM and virtual memory to free up space</li>
-                <li>• <strong>Performance:</strong> Virtual memory is slower than RAM, so frequently-used programs should stay in RAM</li>
-              </ul>
-            </div>
-
-            <div className="text-center mt-6">
+            <div className="m-6 text-center">
               <button
                 onClick={resetSimulation}
-                className="bg-slate-700 hover:bg-slate-600 px-6 py-2 rounded-lg transition mr-3"
+                className="px-6 py-2 mr-3 transition rounded-lg bg-slate-700 hover:bg-slate-600"
               >
                 {gameMode === 'challenges' ? '← Back to Levels' : 'Reset Simulation'}
               </button>
@@ -662,17 +652,28 @@ const VirtualMemorySimulator = () => {
                     setCurrentLevel(currentLevel + 1);
                     startSimulation();
                   }}
-                  className="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg transition"
+                  className="px-6 py-2 transition bg-green-600 rounded-lg hover:bg-green-700"
                 >
                   Next Level →
                 </button>
               )}
               
               {gameState === 'complete' && gameMode === 'challenges' && currentLevel === CHALLENGE_LEVELS.length && (
-                <div className="inline-block bg-gradient-to-r from-yellow-600 to-orange-600 px-6 py-2 rounded-lg font-bold">
+                <div className="inline-block px-6 py-2 font-bold rounded-lg bg-linear-to-r from-yellow-600 to-orange-600">
                   🎉 All Challenges Complete! 🎉
                 </div>
               )}
+            </div>
+
+            <div className="p-6 rounded-lg bg-slate-800">
+              <h3 className="mb-3 font-bold">📚 Key Concepts:</h3>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• <strong>RAM:</strong> Fast, volatile memory that holds active programs</li>
+                <li>• <strong>Virtual Memory:</strong> Uses secondary storage when RAM is full for inactive programs</li>
+                <li>• <strong>Active vs Inactive:</strong> Click programs in RAM to toggle between active and inactive (background)</li>
+                <li>• <strong>Page Swapping:</strong> Moving inactive programs between RAM and virtual memory to free up space in RAM</li>
+                <li>• <strong>Performance:</strong> Swapping to virtual memory is slow, so frequently-used programs should stay in RAM</li>
+              </ul>
             </div>
           </>
         )}
