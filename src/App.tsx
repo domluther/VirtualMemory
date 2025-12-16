@@ -220,9 +220,8 @@ const VirtualMemorySimulator = () => {
       
       setTimeout(() => {
         setRam([...ram, { ...item, status: 'open' }]);
-        setSecondaryStorage(secondaryStorage.filter(p => p.id !== item.id));
         setScore(score + 10);
-        setMessage(`✓ ${item.name} loaded into RAM successfully!`);
+        setMessage(`✓ ${item.name} loaded into RAM successfully! (Original remains in storage)`);
         setIsLoading(false);
         setLoadingMessage('');
         
@@ -324,7 +323,6 @@ const VirtualMemorySimulator = () => {
       
       setTimeout(() => {
         setRam(ram.filter(p => p.id !== item.id));
-        setSecondaryStorage([...secondaryStorage, { ...item, status: 'open' }]);
         setScore(score + 3);
         setMessage(`✓ ${item.name} closed and removed from RAM!`);
         setIsLoading(false);
@@ -340,7 +338,6 @@ const VirtualMemorySimulator = () => {
       
       setTimeout(() => {
         setVirtualMemory(virtualMemory.filter(p => p.id !== item.id));
-        setSecondaryStorage([...secondaryStorage, item]);
         setScore(score + 3);
         setMessage(`✓ ${item.name} closed and removed from Virtual Memory!`);
         setIsLoading(false);
