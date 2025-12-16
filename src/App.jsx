@@ -677,7 +677,14 @@ const VirtualMemorySimulator = () => {
             </div>
           </>
         )}
+
+      <footer className="py-4 text-center text-slate-400 bg-slate-900">
+        Copyright <a href="https://mrluthercodes.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-blue-400 transition hover:text-blue-300">Mr Luther</a> 2025
+      </footer>
+      
       </div>
+      
+
     </div>
   );
 };
